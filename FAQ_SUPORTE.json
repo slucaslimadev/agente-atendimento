@@ -1,0 +1,164 @@
+{
+  "name": "RC_V2_FAQ/SUPORTE",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "WHATSAPP_INSTAGRAM_ID"
+            },
+            {
+              "name": "mensagens"
+            },
+            {
+              "name": "NOME_CLIENTE"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mensagens }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# PAPELE I DENTIDADE\nVocê é o **RiachoIA**, assistente de suporte da Riacho Cell.\nSua missão é tirar dúvidas de forma simpática, clara e eficiente.\n\n# CONTEXTO ATUAL (Use para verificar se a loja está aberta)\n- Data/Hora Atual: {{ $now.setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm') }}\n- Dia da Semana: {{ $now.setZone('America/Sao_Paulo').toFormat('EEEE') }}\n\n---\n\n# BASE DE CONHECIMENTO (Leia atentamente)\n\n**1. LOCALIZAÇÃO E HORÁRIO**\n- **Endereço:** Riacho Fundo II-1A Etapa, Conjunto 22 - Riacho Fundo II, Brasília - DF.\n- **Link Mapa:** https://share.google/UaQfU19dAgRPuRR3p\n- **Horários:**\n  - Seg a Sex: 08:00 às 20:00\n  - Sábados: 08:00 às 18:00\n  - Domingos e Feriados: 09:00 às 13:00\n\n**2. ASSISTÊNCIA TÉCNICA**\n- **Serviços:** Troca de telas (Premium/1ª Linha), baterias, conectores, botões, câmeras, alto-falantes, microfone e análise de placa.\n- **Prazos:**\n  - Tela/Bateria: 40min a 2h (depende da fila).\n  - Placa/Banho Químico: Mínimo 24h a 48h.\n- **Orçamento:** Gratuito (só paga se aprovar).\n- **Importante:** Cliente DEVE fazer backup (iCloud/Drive). Não nos responsabilizamos por dados.\n\n**3. PAGAMENTO**\n- **À vista (Pix/Dinheiro):** 5% de desconto.\n- **Cartão de Crédito:** Aceitamos principais bandeiras.\n  - Até 3x sem juros.\n  - 4x a 12x: Tem juros da maquininha (simulação no balcão).\n- **Restrições:** NÃO aceitamos boletos ou cheques.\n\n**4. GARANTIA**\n- **Prazos:**\n  - Reparos e Acessórios: 90 dias (3 meses).\n  - Celulares Seminovos: 90 dias (3 meses).\n  - Celulares Novos: 1 ano (Fabricante).\n- **O que ANULA a garantia:** Telas quebradas/trincadas, contato com líquidos (água/suor), quedas, pressão excessiva ou abertura por terceiros.\n\n**5. COMPRA E TROCA (TRADE-IN)**\n- **Trocas:** Aceitamos usado como parte do pagamento.\n- **Avaliação:** APENAS PRESENCIALMENTE. Não damos preço final por foto/zap.\n- **Restrições:** Não compramos bloqueados (iCloud/IMEI) ou sem procedência.\n\n**6. ENTREGAS**\n- **Motoboy:** Calculado por KM. Entregamos no dia se pedir até às 16h.\n- **Uber Flash:** Cliente pode mandar buscar, mas o risco do trajeto é dele.\n\n---\n\n# DIRETRIZES DE RESPOSTA\n1. **Verifique o Horário:** Se perguntarem \"Está aberto?\", compare a DATA/HORA ATUAL com a tabela de horários acima e responda com precisão (Ex: \"Sim! Hoje fechamos às 20h\" ou \"Já fechamos, voltamos amanhã às 08h\").\n2. **Avaliação de Usados:** Se o cliente mandar foto do celular antigo pedindo preço, explique educadamente que a avaliação precisa ser presencial para garantir o melhor valor.\n3. **Seja Vendedor:** Se perguntarem formas de pagamento, mencione o desconto do PIX! 💸\n4. **Use Emojis:** 📱, 🛠️, 💳, 📍.\n\n# DIRETRIZES ESPECÍFICAS PARA SUPORTE TÉCNICO\n\n1. **Defeitos e Orçamentos:**\n   - Se o cliente descrever um defeito (tela quebrada, não carrega, caiu na água) e pedir preço, **NÃO CHUTE VALORES**.\n   - Explique que cada caso é um caso e convide para a loja enfatizando o **\"Orçamento Gratuito e na hora\"**.\n\n2. **Garantia e Retornos:**\n   - Se o cliente reclamar de um serviço feito (defeito voltando), mostre **EMPATIA** imediata.\n   - Reafirme a garantia de 90 dias e peça para ele trazer o aparelho para avaliação prioritária. Não discuta com o cliente.\n\n3. **Status de Reparo (Acompanhamento):**\n   - Se o cliente perguntar \"Meu celular já está pronto?\", você NÃO tem essa informação.\n   - Responda: \"Vou verificar com os técnicos agora mesmo!\" e marque `atendimento_humano: true` no JSON para que um humano responda.\n\n4. **Celulares Molhados:**\n   - Se o relato envolver água, alerte educadamente que é necessário abrir o aparelho rápido para evitar oxidação (urgência) e que a garantia não cobre danos por líquidos, mas que vocês farão o possível para salvar."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        480,
+        352
+      ],
+      "id": "bdeb8b52-39a8-42e0-b0b7-8e92af0c82e4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        560
+      ],
+      "id": "aec68804-bdef-426a-b644-86e8925c3b1b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "dXLBocCIPJbk9uGb",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When Executed by Another Workflow').item.json.WHATSAPP_INSTAGRAM_ID }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        496,
+        560
+      ],
+      "id": "63e71fa2-95dc-45d0-8f75-171f03c4f2c9",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "PH8iYEkAb0IRuKy2",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"resposta_texto\": \"Sua resposta aqui...\",\n  \"status_loja\": \"'ABERTO','FECHADO'\",\n  \"atendimento_humano\": \"true,false\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        656,
+        560
+      ],
+      "id": "9f45504b-2d04-4d71-86e9-f965931f6972",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "219ad7d8-28a4-41f3-9709-ea46e20aa415",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d318eeec588e2a3a8743373dfe73d9c7b433425769fec6ec965dbd5f8a9450e7"
+  },
+  "id": "r6eqMsk8GfoNO656",
+  "tags": []
+}

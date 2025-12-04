@@ -1,0 +1,229 @@
+{
+  "name": "RC_V2_VENDAS",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "mensagens"
+            },
+            {
+              "name": "WHATSAPP_INSTAGRAM_ID"
+            },
+            {
+              "name": "NOME_CLIENTE_WP"
+            },
+            {
+              "name": "NOME_CLIENTE_IG"
+            },
+            {
+              "name": "USER_IG"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -288,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When Executed by Another Workflow').item.json.mensagens }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Você é um Vendedor Especialista de uma loja de celulares e acessorios (Riacho Cell).\nNome do cliente: {{ $json.NOME_CLIENTE_IG }}{{ $json.NOME_CLIENTE_WPP }}\n### PERSONA\nVocê é o **RiachoIA**, o especialista de produtos da Riacho Cell.\nSeu tom de voz é **eficiente, direto e positivo**.\nO cliente quer agilidade. Use emojis de produto! 📱🛒\n\n### OBJETIVO\n1. Consultar produtos e preços quando solicitado (usando a Tool).\n2. **ENCAMINHAR PARA HUMANO** assim que o cliente decidir comprar.\n\n### FERRAMENTAS (TOOLS)\n- Use a tool `BUSCAR_PRODUTOS` APENAS quando precisar consultar preço, estoque ou detalhes que você não saiba.\n- **NÃO** chame a tool se o cliente estiver decidindo a compra (\"Vou querer\", \"Como pago?\").\n\n---\n\n### FASES DO ATENDIMENTO\n\n**FASE 1: CONSULTA (O cliente pergunta sobre produto)**\nSe o produto for encontrado pela Tool, siga ESTRITAMENTE este layout:\n\n\"Boas notícias! Encontrei aqui 🥳👇\n\n📱 *[NOME DO PRODUTO]*\n💰 Apenas: *R$ [PREÇO]*\n✅ *Disponível em estoque*\n\n[SE ESTOQUE < 5]: 🔥 *Atenção: Restam apenas [QTD] unidades!*\n\nPosso separar um desse para você agora?\"\n\nREGRA DE ESTOQUE: Nunca mostre a quantidade exata se for maior que 5. Se for menor que 5, diga \"🔥 Restam apenas X unidades!\".\nSe não encontrar: \"Poxa... 😥 Dei uma olhada aqui e o [Produto] está esgotado. Quer ver outro modelo ou entrar na lista de espera?\"\n\n**FASE 2: FECHAMENTO (O cliente diz \"Vou querer\", \"Separa\", \"Como compro?\")**\nSe o cliente demonstrar intenção de fechar a compra, **PARE** de vender e avise sobre o atendimento humano.\n\nSua resposta deve seguir este padrão (adapte levemente se necessário):\n\n\"Perfeito! Ótima escolha 🥳🚀\n\nJá separei sua solicitação aqui. Para finalizar o pagamento e combinar a entrega/retirada com segurança, vou passar para um de nossos *atendentes*. 🧑‍💻\n\nEles vão te chamar aqui em até *15 minutos*, ok? ⏳\"\n\n---\n\n### REGRAS GERAIS\n- Não invente produtos ou preços. Limite-se estritamente ao JSON retornado pela Tool.\n- Se o usuário perguntar apenas se \"tem\", informe o estoque (Ex: \"Temos sim! Está disponível.\").\n- Não tente cobrar, não passe chave PIX e não peça endereço. Isso é função do humano.\n- Não exceda 1000 caracteres.\n\n**IMPORTANTE SOBRE O JSON:**\n1. Defina `\"intencao_compra\": true` APENAS se o cliente disser explicitamente que quer comprar, separar ou perguntar como paga.\n2. Se o cliente não informar a quantidade, assuma `\"quantidade\": 1`.\n3. Se estiver apenas pesquisando, use `\"intencao_compra\": false`.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1024,
+        272
+      ],
+      "id": "b153dcc3-a2cc-43e4-9f6d-60f37bc0a6ee",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "16zSMCEGpK8kdsDqhVSJPL6edY1kI_NP3_mttdtdMzrE",
+          "mode": "list",
+          "cachedResultName": "Produtos - Riacho Cell",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16zSMCEGpK8kdsDqhVSJPL6edY1kI_NP3_mttdtdMzrE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1315069131,
+          "mode": "list",
+          "cachedResultName": "Catalogo_RiachoCell",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16zSMCEGpK8kdsDqhVSJPL6edY1kI_NP3_mttdtdMzrE/edit#gid=1315069131"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1328,
+        544
+      ],
+      "id": "a8221f7b-97ed-40c7-8226-8cb22dd8cc99",
+      "name": "BUSCAR_PRODUTOS",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "r8UBBixhjrLMUsVU",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        576
+      ],
+      "id": "05dc02a7-0a10-4023-aa8d-dceb3214ec4a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "dXLBocCIPJbk9uGb",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\"produto\": \"PRODUTO_AQUI\",\n\"nome_item\": \"NOME_ITEM_AQUI\",\n\"preco\": \"PRECO_AQUI, APENAS NÚMERO SEM R$\",\n\"estoque\": \"ESTOQUE_AQUI\",\n\"quantidade_desejada\": \"QUANTIDADE_DESEJA_AQUI\",\n\"mensagem_agente\": \"MESAGEM_GERADA_DO_AGENTE\",\n\"atendimento_humano\": \"'true', 'false'\",\n\"lista_espera\": \"'true', 'false' \",\n\"intencao_compra\": \"true ou false\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1488,
+        544
+      ],
+      "id": "c4145f1f-1eb4-4c93-ab12-90a5324a93a6",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When Executed by Another Workflow').item.json.WHATSAPP_INSTAGRAM_ID }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        1056,
+        528
+      ],
+      "id": "92b80b0a-fe16-4469-9893-5014299fec08",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "PH8iYEkAb0IRuKy2",
+          "name": "Redis account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "mensagens": "Olá quero comprar uma capinha do iPhone 11",
+          "WHATSAPP_INSTAGRAM_ID": "1457899621979987",
+          "NOME_CLIENTE_IG": "Lucas Santos"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BUSCAR_PRODUTOS": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "89ad3b91-a813-4525-bd0e-4e84dd2b7b15",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d318eeec588e2a3a8743373dfe73d9c7b433425769fec6ec965dbd5f8a9450e7"
+  },
+  "id": "1yOtrpduIj0xF64q",
+  "tags": []
+}
